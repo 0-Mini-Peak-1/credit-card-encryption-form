@@ -1,0 +1,15 @@
+Don't forget to pip install!
+
+Flask
+cryptography
+pyngrok
+python-dotenv
+
+for terminal pasting:
+pip install Flask cryptography pyngrok python-dotenv 
+
+or:
+pip3 install Flask cryptography pyngrok python-dotenv
+
+Btw, I recommend running this app on your own machine since I didn't write the google drive mount functinality :/
+Also I did a port fix for macOS already so enjoy kub :)

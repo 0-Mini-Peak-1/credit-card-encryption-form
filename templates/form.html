@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Credit Card Information</h2>
+        {% if message %}
+        <p class="message">{{ message }}</p>
+        {% endif %}
+        <form method="POST">
+            <label for="cardholder">Cardholder Name</label>
+            <input type="text" id="cardholder" name="cardholder" required>
+
+            <div class="card-number-cvv">
+                <div class="card-number">
+                    <label>Card Number</label>
+                    <div class="card-number-inputs">
+                        <input type="text" id="card_number_1" name="card_number_1" maxlength="4" required>
+                        <input type="text" id="card_number_2" name="card_number_2" maxlength="4" required>
+                        <input type="text" id="card_number_3" name="card_number_3" maxlength="4" required>
+                        <input type="text" id="card_number_4" name="card_number_4" maxlength="4" required>
+                    </div>
+                </div>
+                <div class="cvv">
+                    <label for="cvv_visible">CVV</label>
+                    <!-- This is the visible input -->
+                    <input type="text" id="cvv_visible" maxlength="4" required>
+                    <!-- This is the hidden input -->
+                    <input type="hidden" name="cvv" id="cvv_real">
+                </div>
+            </div>
+
+            <div class="row">
+                <div>
+                    <label for="exp_month">Exp. Month</label>
+                    <input type="text" id="exp_month" name="exp_month" maxlength="2" placeholder="MM" required>
+                </div>
+                <div>
+                    <label for="exp_year">Exp. Year</label>
+                    <input type="text" id="exp_year" name="exp_year" maxlength="4" placeholder="YYYY" required>
+                </div>
+            </div>
+
+            <label for="zip_code">Billing Zip Code</label>
+            <input type="text" id="zip_code" name="zip_code" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+    // Auto advance for card number fields
+    const inputs = document.querySelectorAll('.card-number-inputs input');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', () => {
+            if (input.value.length === 4 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+    });
+
+    // CVV masking logic
+    const cvvVisible = document.getElementById('cvv_visible');
+    const cvvReal = document.getElementById('cvv_real');
+    let maskTimeout;
+
+    function showRealCVV() {
+        cvvVisible.type = 'text';
+        cvvVisible.value = cvvReal.value;
+    }
+
+    function maskCVV() {
+        if (cvvReal.value) {
+            cvvVisible.type = 'text';
+            cvvVisible.value = '***';
+        }
+    }
+
+    cvvVisible.addEventListener('input', () => {
+        clearTimeout(maskTimeout);
+
+        if (cvvVisible.value !== '***') {
+            cvvReal.value = cvvVisible.value;
+        }
+
+        showRealCVV();
+
+        maskTimeout = setTimeout(() => {
+            maskCVV();
+        }, 1000);
+    });
+
+    cvvVisible.addEventListener('focus', () => {
+        if (cvvVisible.value === '***') {
+            showRealCVV();
+        }
+    });
+</script>
+</body>
+
+</html>
